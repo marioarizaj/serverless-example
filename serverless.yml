@@ -1,0 +1,35 @@
+service: serverless-example
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: go1.x
+  lambdaHashingVersion: 20201221
+  region: eu-central-1
+  environment:
+    DB_NAME: ${ssm:db-name~true}
+    DB_USER: ${ssm:db-username~true}
+    DB_HOST: ${ssm:db-host~true}
+    DB_PORT: ${ssm:db-port~true}
+    DB_PASSWORD: ${ssm:db-port~true}
+
+package:
+  exclude:
+    - ./**
+  include:
+    - ./bin/**
+
+functions:
+  hello:
+    handler: bin/hello
+    events:
+      - httpApi:
+          path: /hello
+          method: get
+  world:
+    handler: bin/world
+    events:
+      - httpApi:
+          path: /world
+          method: get
