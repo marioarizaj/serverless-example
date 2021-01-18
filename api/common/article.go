@@ -18,19 +18,3 @@ func (s *Storage) GetAllArticles() ([]models.Article, error) {
 	}
 	return authors, nil
 }
-
-func (s *Storage) UpdateArticle(article *models.Article) (*models.Article, error) {
-	_, err := s.db.Model(article).Update(article)
-	if err != nil {
-		return nil, err
-	}
-	return article, nil
-}
-
-func (s *Storage) DeleteArticle(article *models.Article) error {
-	_, err := s.db.Model(article).Delete(article)
-	if err != nil {
-		return err
-	}
-	return nil
-}

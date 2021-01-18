@@ -8,11 +8,11 @@ provider:
   lambdaHashingVersion: 20201221
   region: eu-central-1
   environment:
-    DB_NAME: ${ssm:db-name~true}
-    DB_USER: ${ssm:db-username~true}
-    DB_HOST: ${ssm:db-host~true}
-    DB_PORT: ${ssm:db-port~true}
-    DB_PASSWORD: ${ssm:db-port~true}
+    DB_NAME: ${ssm:/db-name~true}
+    DB_USER: ${ssm:/db-username~true}
+    DB_HOST: ${ssm:/db-host~true}
+    DB_PORT: ${ssm:/db-port~true}
+    DB_PASSWORD: ${ssm:/db-password~true}
 
 package:
   exclude:
@@ -21,15 +21,27 @@ package:
     - ./bin/**
 
 functions:
-  hello:
-    handler: bin/hello
+  createArticle:
+    handler: bin/create_article
     events:
       - httpApi:
-          path: /hello
+          path: /articles
+          method: post
+  createAuthor:
+    handler: bin/create_author
+    events:
+      - httpApi:
+          path: /authors
+          method: post
+  getArticles:
+    handler: bin/get_articles
+    events:
+      - httpApi:
+          path: /articles
           method: get
-  world:
-    handler: bin/world
+  getAuthors:
+    handler: bin/get_authors
     events:
       - httpApi:
-          path: /world
+          path: /authors
           method: get

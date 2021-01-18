@@ -1,40 +1,38 @@
 package main
 
 import (
-	"bytes"
-	"context"
 	"encoding/json"
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/marioarizaj/serverless-example/api/common"
 )
 
 // Response is of type APIGatewayProxyResponse since we're leveraging the
 // AWS Lambda Proxy Request functionality (default behavior)
 //
 // https://serverless.com/framework/docs/providers/aws/events/apigateway/#lambda-proxy-integration
-type Response events.APIGatewayProxyResponse
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
-func Handler(ctx context.Context) (Response, error) {
-	var buf bytes.Buffer
-
-	body, err := json.Marshal(map[string]interface{}{
-		"message": "Okay so your other function also executed successfully!",
-	})
-
+func Handler() (events.APIGatewayProxyResponse, error) {
+	db, err := common.ConnectToDB()
 	if err != nil {
-		return Response{StatusCode: 404}, err
+		return common.InternalServerError(), err
 	}
-	json.HTMLEscape(&buf, body)
-
-	resp := Response{
+	authors, err := db.GetAllAuthors()
+	if err != nil {
+		return common.InternalServerError(), err
+	}
+	authorsBts, err := json.Marshal(authors)
+	if err != nil {
+		return common.InternalServerError(), err
+	}
+	resp := events.APIGatewayProxyResponse{
 		StatusCode:      200,
 		IsBase64Encoded: false,
-		Body:            buf.String(),
+		Body:            string(authorsBts),
 		Headers: map[string]string{
 			"Content-Type":           "application/json",
-			"X-MyCompany-Func-Reply": "world-handler",
 		},
 	}
 

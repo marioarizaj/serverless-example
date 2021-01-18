@@ -19,18 +19,3 @@ func (s *Storage) GetAllAuthors() ([]models.Author, error) {
 	return authors, nil
 }
 
-func (s *Storage) UpdateAuthor(author *models.Author) (*models.Author, error) {
-	_, err := s.db.Model(author).Update(author)
-	if err != nil {
-		return nil, err
-	}
-	return author, nil
-}
-
-func (s *Storage) DeleteAuthor(author *models.Author) error {
-	_, err := s.db.Model(author).Delete(author)
-	if err != nil {
-		return err
-	}
-	return nil
-}

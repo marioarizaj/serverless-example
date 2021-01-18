@@ -16,8 +16,8 @@ import (
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	var newAuthor models.Author
-	err := json.Unmarshal([]byte(request.Body), &newAuthor)
+	var newArticle models.Article
+	err := json.Unmarshal([]byte(request.Body), &newArticle)
 	if err != nil {
 		return events.APIGatewayProxyResponse{StatusCode: 400}, err
 	}
@@ -26,7 +26,7 @@ func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyRespo
 	if err != nil {
 		return common.InternalServerError(), err
 	}
-	author, err := db.CreateAuthor(&newAuthor)
+	author, err := db.CreateArticle(&newArticle)
 	if err != nil {
 		return common.InternalServerError(), err
 	}
